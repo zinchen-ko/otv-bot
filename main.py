@@ -128,7 +128,7 @@ def send_message_by_time():
                 bot.send_photo(note.get("user"), img)
 
 
-scheduler.add_job(send_message_by_time, 'interval', minute=4)
+scheduler.add_job(send_message_by_time, 'interval', minutes=4)
 
 
 @bot.message_handler(commands=['start'])
