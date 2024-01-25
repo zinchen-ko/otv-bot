@@ -87,6 +87,7 @@ class Note(object):
 
 
 bot = telebot.TeleBot('6421102978:AAER1O_b4hv_NPfqQzpYFXDMD02Cad__rdA')
+bot.remove_webhook()
 planner = DailyPlanner()
 scheduler = BackgroundScheduler()
 session = boto3.session.Session()
