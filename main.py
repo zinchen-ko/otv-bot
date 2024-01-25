@@ -89,7 +89,13 @@ class Note(object):
 bot = telebot.TeleBot('6421102978:AAER1O_b4hv_NPfqQzpYFXDMD02Cad__rdA')
 planner = DailyPlanner()
 scheduler = BackgroundScheduler()
-
+session = boto3.session.Session()
+s3 = session.client(
+    service_name='s3',
+    aws_access_key_id='YCAJEMZNmoPgldt2QGJ0SePi8',
+    aws_secret_access_key='YCMtWZe2r_XP1AHmn2gqO0YmcDrU1BeD0MGtxlGy',
+    endpoint_url='https://storage.yandexcloud.net'
+)
 
 
 def print_note(note):
@@ -100,6 +106,9 @@ def get_all_notes(message):
     notes = planner.get_all_notes(message.chat.id)
     for note in notes:
         bot.send_message(message.chat.id, print_note(note))
+        if note.get("img_id") is not None:
+            file = s3.download_file("zinchenko", note.get("img_id"))
+            print(file)
 
 
 def send_message_by_time():
@@ -228,14 +237,6 @@ def delete_note(message):
     bot.register_next_step_handler(message, delete)
 
 
-session = boto3.session.Session()
-s3 = session.client(
-    service_name='s3',
-    aws_access_key_id='YCAJEMZNmoPgldt2QGJ0SePi8',
-    aws_secret_access_key='YCMtWZe2r_XP1AHmn2gqO0YmcDrU1BeD0MGtxlGy',
-    endpoint_url='https://storage.yandexcloud.net'
-)
-
 def add_img_in_note(message, name_of_note):
     raw = message.photo[2].file_id
     name = raw + ".jpg"
@@ -243,12 +244,9 @@ def add_img_in_note(message, name_of_note):
     downloaded_file = bot.download_file(file_info.file_path)
     with open(name, 'wb') as new_file:
         new_file.write(downloaded_file)
-    response = s3.upload_file(name, "zinchenko", name)
-    if response is True:
-        planner.edit_note(name_of_note, "img_id", name)
-        bot.send_message(message.chat.id, text="Файл успешно загружен")
-    else:
-        bot.send_message(message.chat.id, text="Произошла ошибка при загрузке файла, попробуйте снова")
+    s3.upload_file(name, "zinchenko", name)
+    planner.edit_note(name_of_note, "img_id", name)
+    bot.send_message(message.chat.id, text="Файл успешно загружен")
 
 
 def add_img_for_note(message):
