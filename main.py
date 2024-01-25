@@ -235,7 +235,7 @@ client = boto3.client(
 )
 
 
-def add_img(message, name_of_note):
+def add_img_in_note(message, name_of_note):
     raw = message.photo[2].file_id
     name = raw + ".jpg"
     file_info = bot.get_file(raw)
@@ -250,21 +250,21 @@ def add_img(message, name_of_note):
         bot.send_message(message.chat.id, text="Произошла ошибка при загрузке файла, попробуйте снова")
 
 
-def get_img_for_note(message):
+def add_img_for_note(message):
     name_of_note = message.text
     bot.send_message(message.chat.id, text="Пришлите картинку которую хотите прикрепить")
-    bot.register_next_step_handler(message, add_img, name_of_note)
+    bot.register_next_step_handler(message, add_img_in_note, name_of_note)
 
 
 @bot.message_handler(commands=['add_img'])
-def get_img(message):
+def add_img(message):
     notes = planner.get_all_notes(message.chat.id)
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     for note in notes:
         button = types.KeyboardButton(note.get("name"))
         markup.add(button)
     bot.send_message(message.chat.id, text="Выберите заметку к которой надо прикрепить картинку", reply_markup=markup)
-    bot.register_next_step_handler(message, add_img)
+    bot.register_next_step_handler(message, add_img_for_note)
 
 
 scheduler.start()
