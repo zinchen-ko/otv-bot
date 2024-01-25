@@ -50,6 +50,10 @@ class DailyPlanner(object):
         data = self._collection.find({"user": chat_id, "text": text})
         return data[0]
 
+    def get_note_by_name(self, chat_id, name_of_note):
+        data = self._collection.find({"user": chat_id, "name": name_of_note})
+        return data[0]
+
     def edit_note(self, name_of_note, param, param_value):
         filter = {'name': name_of_note}
         newvalues = {"$set": {f'{param}': param_value}}
@@ -293,6 +297,23 @@ def delete_img(message):
         markup.add(button)
     bot.send_message(message.chat.id, text="Выберите заметку у которой хотите удалить картинку", reply_markup=markup)
     bot.register_next_step_handler(message, delete_img_for_note)
+
+
+def send_solo_note(message):
+    name_of_note = message.text
+    note = planner.get_note_by_name(message.chat.id, name_of_note)
+    bot.send_message(message.chat.id, print_note(note))
+
+
+@bot.message_handler(commands=['get_note'])
+def get_one_note(message):
+    notes = planner.get_all_notes(message.chat.id)
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    for note in notes:
+        button = types.KeyboardButton(note.get("name"))
+        markup.add(button)
+    bot.send_message(message.chat.id, text="Выберите заметку которую хотите посмотреть", reply_markup=markup)
+    bot.register_next_step_handler(message, send_solo_note)
 
 
 scheduler.start()
