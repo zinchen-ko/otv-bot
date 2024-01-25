@@ -109,7 +109,7 @@ def get_all_notes(message):
         print(note)
         if note.get("img_id") is not None:
             with open(f'{note.get("img_id")}', 'wb') as f:
-                s3.download_file("zinchenko", note.get("img_id"), f)
+                s3.download_fileobj("zinchenko", note.get("img_id"), f)
 
 
 def send_message_by_time():
