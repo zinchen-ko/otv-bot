@@ -327,6 +327,11 @@ def send_notes_by_tag(message):
     for note in notes:
         if note.get("tag") == tag:
             bot.send_message(message.chat.id, print_note(note))
+            if note.get("img_id") is not None:
+                with open(f'{note.get("img_id")}', 'wb') as f:
+                    s3.download_fileobj("zinchenko", note.get("img_id"), f)
+                img = open(f'{note.get("img_id")}', 'rb')
+                bot.send_photo(note.get("user"), img)
 
 
 @bot.message_handler(commands=['get_note_by_tag'])
