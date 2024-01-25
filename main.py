@@ -303,6 +303,11 @@ def send_solo_note(message):
     name_of_note = message.text
     note = planner.get_note_by_name(message.chat.id, name_of_note)
     bot.send_message(message.chat.id, print_note(note))
+    if note.get("img_id") is not None:
+        with open(f'{note.get("img_id")}', 'wb') as f:
+            s3.download_fileobj("zinchenko", note.get("img_id"), f)
+        img = open(f'{note.get("img_id")}', 'rb')
+        bot.send_photo(note.get("user"), img)
 
 
 @bot.message_handler(commands=['get_note'])
