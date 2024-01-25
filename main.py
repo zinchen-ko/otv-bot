@@ -121,9 +121,14 @@ def send_message_by_time():
     for note in notes:
         if note.get("date") == current_date:
             bot.send_message(note.get("user"), print_note(note))
+            if note.get("img_id") is not None:
+                with open(f'{note.get("img_id")}', 'wb') as f:
+                    s3.download_fileobj("zinchenko", note.get("img_id"), f)
+                img = open(f'{note.get("img_id")}', 'rb')
+                bot.send_photo(note.get("user"), img)
 
 
-scheduler.add_job(send_message_by_time, 'cron', day_of_week='mon-sun', hour=19, minute='*/5')
+scheduler.add_job(send_message_by_time, 'interval', minute=4)
 
 
 @bot.message_handler(commands=['start'])
