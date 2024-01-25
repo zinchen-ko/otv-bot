@@ -321,6 +321,20 @@ def get_one_note(message):
     bot.register_next_step_handler(message, send_solo_note)
 
 
+def send_notes_by_tag(message):
+    tag = message.text
+    notes = planner.get_all_notes(message.chat.id)
+    for note in notes:
+        if note.get("tag") == tag:
+            bot.send_message(message.chat.id, print_note(note))
+
+
+@bot.message_handler(commands=['get_note_by_tag'])
+def get_note_by_tag(message):
+    bot.send_message(message.chat.id, text="Введите tag по которому вы хотите искать")
+    bot.register_next_step_handler(message, send_notes_by_tag)
+
+
 scheduler.start()
 
 bot.polling(none_stop=True, interval=0)
