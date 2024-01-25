@@ -228,12 +228,13 @@ def delete_note(message):
     bot.register_next_step_handler(message, delete)
 
 
-client = boto3.client(
-    's3',
+session = boto3.session.Session()
+s3 = session.client(
+    service_name='s3',
     aws_access_key_id='YCAJEMZNmoPgldt2QGJ0SePi8',
-    aws_secret_access_key='YCMtWZe2r_XP1AHmn2gqO0YmcDrU1BeD0MGtxlGy'
+    aws_secret_access_key='YCMtWZe2r_XP1AHmn2gqO0YmcDrU1BeD0MGtxlGy',
+    endpoint_url='https://storage.yandexcloud.net'
 )
-
 
 def add_img_in_note(message, name_of_note):
     raw = message.photo[2].file_id
@@ -242,7 +243,7 @@ def add_img_in_note(message, name_of_note):
     downloaded_file = bot.download_file(file_info.file_path)
     with open(name, 'wb') as new_file:
         new_file.write(downloaded_file)
-    response = client.upload_file(name, "zinchenko", name)
+    response = s3.upload_file(name, "zinchenko", name)
     if response is True:
         planner.edit_note(name_of_note, "img_id", name)
         bot.send_message(message.chat.id, text="Файл успешно загружен")
