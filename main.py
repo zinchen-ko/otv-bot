@@ -108,7 +108,7 @@ def get_all_notes(message):
         bot.send_message(message.chat.id, print_note(note))
         print(note)
         if note.get("img_id") is not None:
-            file = s3.download_file("zinchenko", note.get("img_id"))
+            file = s3.download_file(bucket="zinchenko", filename=note.get("img_id"))
             print(file)
 
 
