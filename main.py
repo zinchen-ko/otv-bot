@@ -230,7 +230,7 @@ def delete_note(message):
 
 client = boto3.client(
     's3',
-    aws_access_key_id='ваш YCAJEMZNmoPgldt2QGJ0SePi8',
+    aws_access_key_id='YCAJEMZNmoPgldt2QGJ0SePi8',
     aws_secret_access_key='YCMtWZe2r_XP1AHmn2gqO0YmcDrU1BeD0MGtxlGy'
 )
 
