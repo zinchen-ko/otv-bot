@@ -123,7 +123,7 @@ def send_message_by_time():
             bot.send_message(note.get("user"), print_note(note))
 
 
-scheduler.add_job(send_message_by_time, 'cron', day_of_week='mon-sun', hour=9, minute=0)
+scheduler.add_job(send_message_by_time, 'cron', day_of_week='mon-sun', hour=14, minute=15)
 
 
 @bot.message_handler(commands=['start'])
@@ -268,6 +268,23 @@ def add_img(message):
         markup.add(button)
     bot.send_message(message.chat.id, text="Выберите заметку к которой надо прикрепить картинку", reply_markup=markup)
     bot.register_next_step_handler(message, add_img_for_note)
+
+
+def delete_img_for_note(message):
+    name_of_note = message.text
+    planner.edit_note(name_of_note, "img_id", None)
+    bot.send_message(message.chat.id, text="Картинка успешно удалена")
+
+
+@bot.message_handler(commands=['delete_img'])
+def delete_img(message):
+    notes = planner.get_all_notes(message.chat.id)
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    for note in notes:
+        button = types.KeyboardButton(note.get("name"))
+        markup.add(button)
+    bot.send_message(message.chat.id, text="Выберите заметку у которой хотите удалить картинку", reply_markup=markup)
+    bot.register_next_step_handler(message, delete_img_for_note)
 
 
 scheduler.start()
