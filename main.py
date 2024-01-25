@@ -123,7 +123,7 @@ def send_message_by_time():
             bot.send_message(note.get("user"), print_note(note))
 
 
-scheduler.add_job(send_message_by_time, 'cron', day_of_week='mon-sun', hour=19, minute=9)
+scheduler.add_job(send_message_by_time, 'cron', day_of_week='mon-sun', hour=19, minute=11)
 
 
 @bot.message_handler(commands=['start'])
