@@ -123,7 +123,7 @@ def send_message_by_time():
             bot.send_message(note.get("user"), print_note(note))
 
 
-scheduler.add_job(send_message_by_time, 'cron', day_of_week='mon-sun', hour=14, minute=15)
+scheduler.add_job(send_message_by_time, 'cron', day_of_week='mon-sun', hour=19, minute=9)
 
 
 @bot.message_handler(commands=['start'])
@@ -135,6 +135,8 @@ def start(message):
 def help(message):
     bot.reply_to(
         message,
+        "/start - приветствие\n" +
+        "/help - информация о возможностях бота\n" +
         "/add_note - добавление заметки\n" +
         "/get_notes - посмотреть текущие заметки\n" +
         "/edit_note - изменение заметки\n" +
