@@ -116,6 +116,7 @@ def get_all_notes(message):
 
 
 def send_message_by_time():
+    print("cron")
     notes = planner.get_all_notes()
     current_date = datetime.datetime.now().strftime('%d/%m/%Y')
     for note in notes:
@@ -128,7 +129,7 @@ def send_message_by_time():
                 bot.send_photo(note.get("user"), img)
 
 
-scheduler.add_job(send_message_by_time, 'interval', minutes=4)
+scheduler.add_job(send_message_by_time, 'interval', minutes=2)
 
 
 @bot.message_handler(commands=['start'])
