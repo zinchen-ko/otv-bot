@@ -110,6 +110,8 @@ def get_all_notes(message):
         if note.get("img_id") is not None:
             with open(f'{note.get("img_id")}', 'wb') as f:
                 s3.download_fileobj("zinchenko", note.get("img_id"), f)
+            img = open(f'{note.get("img_id")}')
+            bot.send_photo(message.chat.id, img)
 
 
 def send_message_by_time():
